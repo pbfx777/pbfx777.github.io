@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-8NLKSJK85H"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-8NLKSJK85H');
+  </script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>偶像梦幻祭角色好感排序器</title>
+  <style>
+    :root {
+      --bg-1: #fff7fb;
+      --bg-2: #ffe9f3;
+      --bg-3: #ffd9eb;
+      --panel: rgba(255,255,255,.72);
+      --panel-strong: rgba(255,255,255,.88);
+      --text: #6c3650;
+      --text-strong: #4b2436;
+      --muted: #9d6f85;
+      --accent: #ff7eb6;
+      --accent-2: #ff9bc7;
+      --accent-3: #ffc0dc;
+      --line: rgba(255, 126, 182, .20);
+      --shadow: 0 18px 48px rgba(226, 123, 165, .18);
+      --shadow-hover: 0 24px 50px rgba(226, 123, 165, .28);
+      --radius-xl: 28px;
+      --radius-lg: 22px;
+      --radius-md: 16px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(255, 183, 214, .7) 0, rgba(255, 183, 214, 0) 28%),
+        radial-gradient(circle at top right, rgba(255, 207, 227, .85) 0, rgba(255, 207, 227, 0) 24%),
+        linear-gradient(180deg, var(--bg-1) 0%, var(--bg-2) 55%, #fff3f8 100%);
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    body::before,
+    body::after {
+      content: "";
+      position: fixed;
+      inset: auto;
+      width: 320px;
+      height: 320px;
+      border-radius: 999px;
+      filter: blur(40px);
+      opacity: .45;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    body::before {
+      top: -60px;
+      left: -80px;
+      background: rgba(255, 196, 221, .8);
+    }
+
+    body::after {
+      bottom: -80px;
+      right: -60px;
+      background: rgba(255, 222, 236, .9);
+    }
+
+    .wrap {
+      position: relative;
+      z-index: 1;
+      width: min(1180px, calc(100vw - 28px));
+      margin: 0 auto;
+      padding: 24px 0 36px;
+    }
+
+    .panel {
+      background: linear-gradient(180deg, var(--panel-strong), var(--panel));
+      border: 1px solid rgba(255,255,255,.72);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+    }
+
+    .hero {
+      padding: 24px;
+      margin-bottom: 18px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .hero::after {
+      content: "";
+      position: absolute;
+      top: -60px;
+      right: -20px;
+      width: 220px;
+      height: 220px;
+      border-radius: 999px;
+      background: radial-gradient(circle, rgba(255, 200, 226, .65) 0%, rgba(255, 200, 226, 0) 72%);
+      pointer-events: none;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.72);
+      border: 1px solid rgba(255, 126, 182, .18);
+      color: var(--accent);
+      font-weight: 700;
+      font-size: 13px;
+      margin-bottom: 14px;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.7);
+    }
+
+    h1 {
+      margin: 0 0 10px;
+      font-size: clamp(30px, 4vw, 44px);
+      line-height: 1.1;
+      color: var(--text-strong);
+      letter-spacing: .02em;
+    }
+
+    .sub {
+      color: var(--muted);
+      line-height: 1.75;
+      font-size: 15px;
+      max-width: 760px;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0,1fr));
+      gap: 14px;
+      margin-top: 18px;
+    }
+
+    .stat {
+      background: rgba(255,255,255,.62);
+      border: 1px solid rgba(255,255,255,.78);
+      border-radius: 20px;
+      padding: 16px 18px;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.8);
+    }
+
+    .stat .label {
+      color: var(--muted);
+      font-size: 12px;
+      margin-bottom: 8px;
+      font-weight: 700;
+      letter-spacing: .04em;
+    }
+
+    .stat .value {
+      font-size: clamp(24px, 3vw, 30px);
+      font-weight: 800;
+      color: var(--text-strong);
+    }
+
+    .progress-shell {
+      margin-top: 16px;
+      background: rgba(255,255,255,.5);
+      border: 1px solid rgba(255,255,255,.82);
+      border-radius: 999px;
+      padding: 6px;
+    }
+
+    .progress-bar {
+      height: 12px;
+      width: 0%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, var(--accent) 0%, var(--accent-2) 55%, #ffd3e7 100%);
+      transition: width .25s ease;
+      box-shadow: 0 8px 16px rgba(255, 126, 182, .24);
+    }
+
+    .controls {
+      display:flex;
+      flex-wrap:wrap;
+      gap:12px;
+      margin-top: 18px;
+    }
+
+    button {
+      appearance: none;
+      border: 0;
+      border-radius: 999px;
+      padding: 13px 18px;
+      font-size: 15px;
+      font-weight: 800;
+      letter-spacing: .01em;
+      cursor: pointer;
+      transition: transform .16s ease, box-shadow .16s ease, opacity .16s ease, background .16s ease;
+    }
+
+    button:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 12px 22px rgba(255, 126, 182, .22);
+    }
+
+    button:active {
+      transform: translateY(0);
+    }
+
+    button.primary {
+      background: linear-gradient(180deg, var(--accent) 0%, #ff6aa9 100%);
+      color: white;
+      box-shadow: 0 12px 22px rgba(255, 126, 182, .24);
+    }
+
+    button.secondary {
+      background: rgba(255,255,255,.72);
+      color: var(--text);
+      border: 1px solid rgba(255,255,255,.85);
+    }
+
+    .hint {
+      margin-top: 12px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.7;
+      background: rgba(255,255,255,.42);
+      border: 1px dashed rgba(255, 126, 182, .22);
+      border-radius: 18px;
+      padding: 12px 14px;
+    }
+
+    .hidden { display:none !important; }
+
+    .battle,
+    .result {
+      padding: 18px;
+    }
+
+    .battle-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+    }
+
+    .card {
+      position: relative;
+      overflow: hidden;
+      border-radius: 28px;
+      border: 1px solid rgba(255,255,255,.88);
+      background: linear-gradient(180deg, rgba(255,255,255,.78), rgba(255,255,255,.62));
+      cursor: pointer;
+      min-height: 360px;
+      user-select: none;
+      touch-action: manipulation;
+      transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+      box-shadow: 0 16px 30px rgba(231, 143, 179, .12);
+      isolation: isolate;
+    }
+
+    .card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(255,255,255,.18), rgba(255,255,255,0));
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-hover);
+      border-color: rgba(255, 157, 201, .7);
+    }
+
+    .card:active {
+      transform: translateY(-1px) scale(.995);
+    }
+
+    .card img {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      height: 100%;
+      display: block;
+      object-fit: contain;
+      aspect-ratio: 1 / 1;
+      background:
+        radial-gradient(circle at top, rgba(255,255,255,.95), rgba(255,255,255,.65) 60%, rgba(255, 239, 246, .88) 100%);
+      padding: 22px;
+    }
+
+    .corner {
+      position: absolute;
+      top: 14px;
+      left: 14px;
+      z-index: 2;
+      padding: 9px 13px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 800;
+      color: white;
+      background: linear-gradient(180deg, rgba(255, 126, 182, .96), rgba(255, 116, 170, .94));
+      box-shadow: 0 8px 16px rgba(255, 126, 182, .24);
+    }
+
+    .vs-badge {
+      display: grid;
+      place-items: center;
+      width: 72px;
+      height: 72px;
+      border-radius: 999px;
+      background: linear-gradient(180deg, #fff 0%, #ffe7f1 100%);
+      border: 1px solid rgba(255,255,255,.9);
+      box-shadow: 0 12px 25px rgba(230, 133, 177, .18);
+      color: var(--accent);
+      font-weight: 900;
+      font-size: 22px;
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 3;
+      pointer-events: none;
+    }
+
+    .result-head {
+      display:flex;
+      justify-content:space-between;
+      gap:12px;
+      align-items:center;
+      flex-wrap:wrap;
+    }
+
+    h2 {
+      color: var(--text-strong);
+    }
+
+    .result-note {
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.7;
+    }
+
+    .result-image-wrap {
+      margin-top: 16px;
+      background: linear-gradient(180deg, rgba(255,255,255,.72), rgba(255,255,255,.58));
+      border: 1px solid rgba(255,255,255,.85);
+      border-radius: 24px;
+      padding: 16px;
+      overflow:auto;
+    }
+
+    canvas {
+      display:block;
+      margin:0 auto;
+      max-width:100%;
+      height:auto;
+      border-radius:16px;
+      background:#fff5fa;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.86);
+    }
+
+    .footer {
+      margin-top: 14px;
+      color: var(--muted);
+      font-size: 12px;
+      text-align:center;
+    }
+
+    @media (max-width: 900px) {
+      .battle-grid {
+        gap: 14px;
+      }
+
+      .card {
+        min-height: 300px;
+      }
+    }
+
+    @media (max-width: 780px) {
+      .wrap {
+        width: min(100vw - 20px, 1180px);
+        padding: 18px 0 28px;
+      }
+
+      .hero,
+      .battle,
+      .result {
+        padding: 16px;
+      }
+
+      .stats {
+        grid-template-columns: 1fr;
+      }
+
+      .battle-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .card {
+        min-height: 260px;
+      }
+
+      .vs-badge {
+        position: static;
+        transform: none;
+        margin: 0 auto;
+        width: 58px;
+        height: 58px;
+        font-size: 18px;
+      }
+
+      .hero {
+        position: relative;
+      }
+
+      .hero * {
+        position: relative;
+        z-index: 10;
+      }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <section class="panel hero">
+      <div class="eyebrow">
+        <a href="https://xhslink.com/m/5lUY11DuvF1" target="_blank" rel="noopener noreferrer">♡ by Pb_fX</a>
+      </div>
+      <h1>偶像梦幻祭角色好感排序器</h1>
+      <div class="sub">使用说明：每轮从两张图里选一个更喜欢的，最后会生成一张名次结果图，可以长按直接保存</div>
+      <div class="stats">
+        <div class="stat"><div class="label">角色总数</div><div class="value" id="totalCount">0</div></div>
+        <div class="stat"><div class="label">当前进度</div><div class="value" id="progressText">0 / 0</div></div>
+        <div class="stat"><div class="label">预计比较次数</div><div class="value" id="estimateText">0</div></div>
+      </div>
+      <div class="progress-shell" aria-hidden="true">
+        <div class="progress-bar" id="progressBar"></div>
+      </div>
+      <div class="controls">
+        <button class="primary" id="startBtn">开始排序</button>
+        <button class="secondary hidden" id="undoBtn">撤销上一步</button>
+        <button class="secondary hidden" id="restartBtn">重新开始</button>
+        <button class="secondary hidden" id="saveImageBtn">保存结果图片</button>
+      </div>
+      <div class="hint">操作方式：直接点左图或右图即可选择。电脑端也可以按 <b>←</b> 选左边、按 <b>→</b> 选右边、按 <b>Backspace</b> 撤销</div>
+    </section>
+
+    <section class="panel battle hidden" id="battlePanel">
+      <div class="battle-grid">
+        <div class="card" id="leftCard" tabindex="0" role="button" aria-label="选择左边图片">
+          <div class="corner">选这个</div>
+          <img id="leftImg" alt="左侧角色图" />
+        </div>
+        <div class="vs-badge">VS</div>
+        <div class="card" id="rightCard" tabindex="0" role="button" aria-label="选择右边图片">
+          <div class="corner">选这个</div>
+          <img id="rightImg" alt="右侧角色图" />
+        </div>
+      </div>
+    </section>
+
+    <section class="panel result hidden" id="resultPanel">
+      <div class="result-head">
+        <div>
+          <h2 style="margin:0 0 6px;">排序完成</h2>
+          <div class="result-note">这张图已经按你的选择排好了顺序，左上开始是第一名，依次往后，长按即可下载</div>
+        </div>
+      </div>
+      <div class="result-image-wrap">
+        <canvas id="resultCanvas"></canvas>
+      </div>
+    </section>
+  </div>
+
+<script>
+const ITEMS = [{"id": 1, "src": "assets/10013.png"}, {"id": 2, "src": "assets/10014.png"}, {"id": 3, "src": "assets/10015.png"}, {"id": 4, "src": "assets/10016.png"}, {"id": 5, "src": "assets/10017.png"}, {"id": 6, "src": "assets/10018.png"}, {"id": 7, "src": "assets/10019.png"}, {"id": 8, "src": "assets/10020.png"}, {"id": 9, "src": "assets/10021.png"}, {"id": 10, "src": "assets/10022.png"}, {"id": 11, "src": "assets/10023.png"}, {"id": 12, "src": "assets/10024.png"}, {"id": 13, "src": "assets/10025.png"}, {"id": 14, "src": "assets/10026.png"}, {"id": 15, "src": "assets/10027.png"}, {"id": 16, "src": "assets/10028.png"}, {"id": 17, "src": "assets/10029.png"}, {"id": 18, "src": "assets/10030.png"}, {"id": 19, "src": "assets/10031.png"}, {"id": 20, "src": "assets/10032.png"}, {"id": 21, "src": "assets/10033.png"}, {"id": 22, "src": "assets/10034.png"}, {"id": 23, "src": "assets/10035.png"}, {"id": 24, "src": "assets/10036.png"}, {"id": 25, "src": "assets/10037.png"}, {"id": 26, "src": "assets/10038.png"}, {"id": 27, "src": "assets/10039.png"}, {"id": 28, "src": "assets/10040.png"}, {"id": 29, "src": "assets/10041.png"}, {"id": 30, "src": "assets/10042.png"}, {"id": 31, "src": "assets/10043.png"}, {"id": 32, "src": "assets/10044.png"}, {"id": 33, "src": "assets/10045.png"}, {"id": 34, "src": "assets/10046.png"}, {"id": 35, "src": "assets/10047.png"}, {"id": 36, "src": "assets/10048.png"}, {"id": 37, "src": "assets/10049.png"}, {"id": 38, "src": "assets/10050.png"}, {"id": 39, "src": "assets/10051.png"}, {"id": 40, "src": "assets/10052.png"}, {"id": 41, "src": "assets/10053.png"}, {"id": 42, "src": "assets/10054.png"}, {"id": 43, "src": "assets/10055.png"}, {"id": 44, "src": "assets/10056.png"}, {"id": 45, "src": "assets/10057.png"}, {"id": 46, "src": "assets/10058.png"}, {"id": 47, "src": "assets/10059.png"}, {"id": 48, "src": "assets/10060.png"}, {"id": 49, "src": "assets/10061.png"}, {"id": 50, "src": "assets/10062.png"}, {"id": 51, "src": "assets/10063.png"}, {"id": 52, "src": "assets/10064.png"}, {"id": 53, "src": "assets/10065.png"}, {"id": 54, "src": "assets/10066.png"}, {"id": 55, "src": "assets/10067.png"}, {"id": 56, "src": "assets/10068.png"}, {"id": 57, "src": "assets/10069.png"}, {"id": 58, "src": "assets/10070.png"}, {"id": 59, "src": "assets/10071.png"}, {"id": 60, "src": "assets/10072.png"}, {"id": 61, "src": "assets/10073.png"}, {"id": 62, "src": "assets/10074.png"}, {"id": 63, "src": "assets/10075.png"}, {"id": 64, "src": "assets/img9355.png"}];
+
+const els = {
+  totalCount: document.getElementById('totalCount'),
+  currentCount: document.getElementById('progressText'),
+  estimateCount: document.getElementById('estimateText'),
+  progressFill: document.getElementById('progressBar'),
+  battlePanel: document.getElementById('battlePanel'),
+  resultPanel: document.getElementById('resultPanel'),
+  startBtn: document.getElementById('startBtn'),
+  restartBtn: document.getElementById('restartBtn'),
+  undoBtn: document.getElementById('undoBtn'),
+  resultCanvas: document.getElementById('resultCanvas'),
+  saveImageBtn: document.getElementById('saveImageBtn'),
+  leftCard: document.getElementById('leftCard'),
+  rightCard: document.getElementById('rightCard'),
+  leftImg: document.getElementById('leftImg'),
+  rightImg: document.getElementById('rightImg'),
+};
+
+const state = {
+  shuffled: [],
+  sorted: [],
+  finished: false,
+  totalSelections: 0,
+  currentSelection: 0,
+  history: [], // snapshots of choiceHistory lengths
+  choiceHistory: [],
+  autoPicking: false,
+  currentResolver: null,
+  currentLeft: null,
+  currentRight: null,
+  runId: 0,
+  clickLocked: false,
+  currentCleanup: null,
+};
+
+function shuffle(arr) {
+  const clone = [...arr];
+  for (let i = clone.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [clone[i], clone[j]] = [clone[j], clone[i]];
+  }
+  return clone;
+}
+
+function estimateComparisons(n) {
+  return Math.max(n - 1, Math.ceil(n * Math.log2(n)));
+}
+
+function updateStats() {
+  els.totalCount.textContent = ITEMS.length;
+  const total = state.totalSelections || estimateComparisons(ITEMS.length);
+  els.currentCount.textContent = `${state.currentSelection} / ${total}`;
+  els.estimateCount.textContent = total;
+  const progress = state.totalSelections ? Math.min(100, (state.currentSelection / state.totalSelections) * 100) : 0;
+  els.progressFill.style.width = `${progress}%`;
+}
+
+function renderBattle() {
+  updateStats();
+  els.battlePanel.classList.remove('hidden');
+  els.resultPanel.classList.add('hidden');
+  els.restartBtn.classList.remove('hidden');
+  els.undoBtn.classList.toggle('hidden', state.choiceHistory.length === 0 || state.autoPicking || state.finished);
+  if (state.currentLeft && state.currentRight) {
+    els.leftImg.src = state.currentLeft.src;
+    els.rightImg.src = state.currentRight.src;
+  }
+}
+
+function roundRect(ctx, x, y, width, height, radius) {
+  const r = Math.min(radius, width / 2, height / 2);
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.arcTo(x + width, y, x + width, y + height, r);
+  ctx.arcTo(x + width, y + height, x, y + height, r);
+  ctx.arcTo(x, y + height, x, y, r);
+  ctx.arcTo(x, y, x + width, y, r);
+  ctx.closePath();
+}
+
+function drawResultImage(items) {
+  const canvas = els.resultCanvas;
+  const ctx = canvas.getContext('2d');
+  const count = items.length;
+  const cols = count <= 16 ? 4 : count <= 36 ? 5 : 6;
+  const cell = 180;
+  const gap = 18;
+  const rows = Math.ceil(count / cols);
+  canvas.width = cols * cell + (cols + 1) * gap;
+  canvas.height = rows * cell + (rows + 1) * gap;
+
+  const bg = ctx.createLinearGradient(0, 0, 0, canvas.height);
+  bg.addColorStop(0, '#fff8fc');
+  bg.addColorStop(1, '#ffeef6');
+  ctx.fillStyle = bg;
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  return Promise.all(items.map(item => new Promise((resolve) => {
+    const img = new Image();
+    img.onload = () => resolve({ item, img });
+    img.onerror = () => resolve({ item, img: null });
+    img.src = item.src;
+  }))).then(loaded => {
+    loaded.forEach(({img}, index) => {
+      const col = index % cols;
+      const row = Math.floor(index / cols);
+      const x = gap + col * (cell + gap);
+      const y = gap + row * (cell + gap);
+
+      ctx.save();
+      roundRect(ctx, x, y, cell, cell, 22);
+      ctx.clip();
+      const cellBg = ctx.createLinearGradient(x, y, x, y + cell);
+      cellBg.addColorStop(0, '#fffdfd');
+      cellBg.addColorStop(1, '#ffe5f0');
+      ctx.fillStyle = cellBg;
+      ctx.fillRect(x, y, cell, cell);
+      if (img) {
+        ctx.drawImage(img, x + 8, y + 8, cell - 16, cell - 16);
+      }
+      ctx.restore();
+
+      ctx.strokeStyle = 'rgba(255, 140, 190, .35)';
+      ctx.lineWidth = 2;
+      roundRect(ctx, x, y, cell, cell, 22);
+      ctx.stroke();
+
+      ctx.fillStyle = 'rgba(255, 120, 175, .92)';
+      roundRect(ctx, x + 10, y + 10, 56, 34, 17);
+      ctx.fill();
+      ctx.fillStyle = '#ffffff';
+      ctx.font = 'bold 20px -apple-system, BlinkMacSystemFont, Segoe UI, PingFang SC, Microsoft YaHei, sans-serif';
+      ctx.textAlign = 'left';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(`#${index + 1}`, x + 18, y + 27);
+    });
+  });
+}
+
+function compareFactory() {
+  return function(a, b) {
+    return new Promise(resolve => {
+      const myRunId = state.runId;
+      state.currentLeft = a;
+      state.currentRight = b;
+      state.currentSelection = state.choiceHistory.length;
+      state.clickLocked = false;
+      renderBattle();
+
+      const autoIndex = state.choiceHistory.length;
+      if (autoIndex < state.replayChoices.length) {
+        state.autoPicking = true;
+        const winner = state.replayChoices[autoIndex];
+        state.choiceHistory.push(winner);
+        state.history.push({ choiceLength: state.choiceHistory.length });
+        state.currentSelection = state.choiceHistory.length;
+        updateStats();
+        setTimeout(() => {
+          if (myRunId !== state.runId) return;
+          state.autoPicking = false;
+          resolve(winner === 'left' ? -1 : 1);
+        }, 0);
+        return;
+      }
+
+      state.autoPicking = false;
+
+      const leftClick = () => pick('left');
+      const rightClick = () => pick('right');
+      const keyHandler = (e) => {
+        if (myRunId !== state.runId) return;
+        if (e.key === 'ArrowLeft') { e.preventDefault(); leftClick(); }
+        if (e.key === 'ArrowRight') { e.preventDefault(); rightClick(); }
+      };
+
+      function cleanup() {
+        els.leftCard.removeEventListener('click', leftClick);
+        els.rightCard.removeEventListener('click', rightClick);
+        document.removeEventListener('keydown', keyHandler);
+        if (state.currentCleanup === cleanup) {
+          state.currentCleanup = null;
+        }
+      }
+
+      function pick(winner) {
+        if (myRunId !== state.runId) return;
+        if (state.clickLocked || state.autoPicking) return;
+        state.clickLocked = true;
+        cleanup();
+        state.choiceHistory.push(winner);
+        state.history.push({ choiceLength: state.choiceHistory.length });
+        state.currentSelection = state.choiceHistory.length;
+        updateStats();
+        requestAnimationFrame(() => {
+          if (myRunId !== state.runId) return;
+          resolve(winner === 'left' ? -1 : 1);
+        });
+      }
+
+      state.currentCleanup = cleanup;
+      els.leftCard.addEventListener('click', leftClick);
+      els.rightCard.addEventListener('click', rightClick);
+      document.addEventListener('keydown', keyHandler);
+    });
+  };
+}
+
+async function mergeSort(arr, compare) {
+  if (arr.length <= 1) return arr;
+  const mid = Math.floor(arr.length / 2);
+  const left = await mergeSort(arr.slice(0, mid), compare);
+  const right = await mergeSort(arr.slice(mid), compare);
+  return await merge(left, right, compare);
+}
+
+async function merge(left, right, compare) {
+  const result = [];
+  let i = 0, j = 0;
+  while (i < left.length && j < right.length) {
+    const c = await compare(left[i], right[j]);
+    if (c <= 0) result.push(left[i++]);
+    else result.push(right[j++]);
+  }
+  return result.concat(left.slice(i), right.slice(j));
+}
+
+async function runSort(replayChoices = [], preserveShuffle = false) {
+  state.runId += 1;
+  const myRunId = state.runId;
+
+  if (state.currentCleanup) {
+    state.currentCleanup();
+  }
+
+  state.finished = false;
+  state.replayChoices = [...replayChoices];
+  state.history = [];
+  state.choiceHistory = [];
+  state.sorted = [];
+  state.currentLeft = null;
+  state.currentRight = null;
+  state.autoPicking = false;
+  state.clickLocked = false;
+
+  if (!preserveShuffle || state.shuffled.length === 0) {
+    state.shuffled = shuffle(ITEMS);
+  }
+
+  state.totalSelections = estimateComparisons(state.shuffled.length);
+  state.currentSelection = 0;
+  els.startBtn.classList.add('hidden');
+  els.saveImageBtn.classList.add('hidden');
+  els.resultPanel.classList.add('hidden');
+  els.battlePanel.classList.remove('hidden');
+  updateStats();
+
+  const compare = compareFactory();
+  const sorted = await mergeSort(state.shuffled, compare);
+
+  if (myRunId !== state.runId) return;
+
+  state.sorted = sorted;
+  state.finished = true;
+  state.currentSelection = state.choiceHistory.length;
+  state.clickLocked = false;
+  updateStats();
+  els.battlePanel.classList.add('hidden');
+  els.resultPanel.classList.remove('hidden');
+  els.undoBtn.classList.add('hidden');
+  els.saveImageBtn.classList.remove('hidden');
+  await drawResultImage(sorted);
+}
+
+function start() {
+  runSort([], false);
+}
+
+function restart() {
+  runSort([], false);
+}
+
+function undoLastChoice() {
+  if (state.choiceHistory.length === 0 || state.autoPicking || state.clickLocked || state.finished) return;
+  const replay = state.choiceHistory.slice(0, -1);
+  runSort(replay, true);
+}
+
+function downloadCanvas() {
+  const dataUrl = els.resultCanvas.toDataURL('image/png');
+  const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+    (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+
+  if (isIOS) {
+    const w = window.open('');
+    if (w) {
+      w.document.write(`<title>长按保存图片</title><img src="${dataUrl}" style="max-width:100%;display:block;margin:auto;" />`);
+      w.document.close();
+    } else {
+      location.href = dataUrl;
+    }
+    return;
+  }
+
+  const link = document.createElement('a');
+  link.download = 'enstars_sorted_result.png';
+  link.href = dataUrl;
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+}
+
+els.startBtn.addEventListener('click', start);
+els.restartBtn.addEventListener('click', restart);
+els.undoBtn.addEventListener('click', undoLastChoice);
+els.saveImageBtn.addEventListener('click', downloadCanvas);
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Backspace' && !state.finished && state.choiceHistory.length > 0) {
+    e.preventDefault();
+    undoLastChoice();
+  }
+});
+
+els.totalCount.textContent = ITEMS.length;
+state.totalSelections = estimateComparisons(ITEMS.length);
+updateStats();
+</script>
+</body>
+</html>
