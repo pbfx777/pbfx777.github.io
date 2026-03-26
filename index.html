@@ -519,6 +519,7 @@ const state = {
   currentCleanup: null,
   totalComparisons: 0,
   doneComparisons: 0,
+  remainingComparisons: 0,
 };
 
 function shuffle(arr) {
@@ -531,15 +532,18 @@ function shuffle(arr) {
 }
 
 function estimateComparisons(n) {
-  return Math.max(n - 1, Math.ceil(n * Math.log2(n)));
+  if (n <= 1) return 0;
+  const left = Math.floor(n / 2);
+  const right = n - left;
+  return estimateComparisons(left) + estimateComparisons(right) + (n - 1);
 }
 
 function updateStats() {
   els.totalCount.textContent = ITEMS.length;
-  const total = state.totalSelections || estimateComparisons(ITEMS.length);
-  els.currentCount.textContent = `${state.currentSelection}`;
-  els.estimateCount.textContent = Math.max(0, Math.round(state.estimatedRemaining));
-  const progress = state.totalSelections ? Math.min(100, (state.currentSelection / state.totalSelections) * 100) : 0;
+  const totalKnown = state.doneComparisons + state.remainingComparisons;
+  els.currentCount.textContent = `${state.doneComparisons} / ${totalKnown}`;
+  els.estimateCount.textContent = state.remainingComparisons;
+  const progress = totalKnown ? Math.min(100, (state.doneComparisons / totalKnown) * 100) : 0;
   els.progressFill.style.width = `${progress}%`;
 }
 
@@ -647,9 +651,9 @@ function compareFactory() {
         state.choiceHistory.push(winner);
         state.history.push({ choiceLength: state.choiceHistory.length });
         state.currentSelection = state.choiceHistory.length;
+        state.doneComparisons += 1;
+        state.remainingComparisons = Math.max(0, state.remainingComparisons - 1);
         updateStats();
-        state.doneComparisons++;
-        updateEstimate();
         setTimeout(() => {
           if (myRunId !== state.runId) return;
           state.autoPicking = false;
@@ -677,11 +681,7 @@ function compareFactory() {
         }
       }
 
-      function updateEstimate() {
-        const remaining = Math.max(0, state.totalComparisons - state.doneComparisons);
-        els.estimateCount.textContent = remaining;
-      }
-      
+
       function pick(winner) {
         if (state.clickLocked || state.autoPicking) return;
         if (myRunId !== state.runId) return;
@@ -689,10 +689,10 @@ function compareFactory() {
         state.clickLocked = true;
         cleanup();
         state.choiceHistory.push(winner);
-        state.doneComparisons++;
-        updateEstimate();
         state.history.push({ choiceLength: state.choiceHistory.length });
         state.currentSelection = state.choiceHistory.length;
+        state.doneComparisons += 1;
+        state.remainingComparisons = Math.max(0, state.remainingComparisons - 1);
         updateStats();
         requestAnimationFrame(() => {
           if (myRunId !== state.runId) return;
@@ -720,11 +720,22 @@ async function mergeSort(arr, compare) {
 async function merge(left, right, compare) {
   const result = [];
   let i = 0, j = 0;
+  let comparisonsUsed = 0;
+  const potentialComparisons = Math.max(0, left.length + right.length - 1);
+
   while (i < left.length && j < right.length) {
     const c = await compare(left[i], right[j]);
+    comparisonsUsed += 1;
     if (c <= 0) result.push(left[i++]);
     else result.push(right[j++]);
   }
+
+  const skippedComparisons = potentialComparisons - comparisonsUsed;
+  if (skippedComparisons > 0) {
+    state.remainingComparisons = Math.max(0, state.remainingComparisons - skippedComparisons);
+    updateStats();
+  }
+
   return result.concat(left.slice(i), right.slice(j));
 }
 
@@ -745,6 +756,8 @@ async function runSort(replayChoices = [], preserveShuffle = false) {
   state.currentRight = null;
   state.autoPicking = false;
   state.clickLocked = false;
+  state.doneComparisons = 0;
+  state.remainingComparisons = 0;
 
   if (!preserveShuffle || state.shuffled.length === 0) {
     state.shuffled = shuffle(ITEMS);
@@ -752,6 +765,8 @@ async function runSort(replayChoices = [], preserveShuffle = false) {
 
   state.totalSelections = 0;
   state.currentSelection = 0;
+  state.totalComparisons = estimateComparisons(state.shuffled.length);
+  state.remainingComparisons = state.totalComparisons;
   els.startBtn.classList.add('hidden');
   els.saveImageBtn.classList.add('hidden');
   els.resultPanel.classList.add('hidden');
@@ -767,6 +782,7 @@ async function runSort(replayChoices = [], preserveShuffle = false) {
   state.finished = true;
   state.currentSelection = state.choiceHistory.length;
   state.clickLocked = false;
+  state.remainingComparisons = 0;
   updateStats();
   els.battlePanel.classList.add('hidden');
   els.resultPanel.classList.remove('hidden');
@@ -777,8 +793,6 @@ async function runSort(replayChoices = [], preserveShuffle = false) {
 
 function start() {
   runSort([], false);
-  state.totalComparisons = Math.ceil(state.characters.length * Math.log2(state.characters.length));
-  state.doneComparisons = 0;
 }
 
 function restart() {
@@ -828,7 +842,8 @@ document.addEventListener('keydown', (e) => {
 });
 
 els.totalCount.textContent = ITEMS.length;
-state.totalSelections = estimateComparisons(ITEMS.length);
+state.totalComparisons = estimateComparisons(ITEMS.length);
+state.remainingComparisons = state.totalComparisons;
 updateStats();
 </script>
 </body>
