@@ -535,8 +535,8 @@ function estimateComparisons(n) {
 function updateStats() {
   els.totalCount.textContent = ITEMS.length;
   const total = state.totalSelections || estimateComparisons(ITEMS.length);
-  els.currentCount.textContent = `${state.currentSelection} / ${total}`;
-  els.estimateCount.textContent = total;
+  els.currentCount.textContent = `${state.currentSelection}`;
+  els.estimateCount.textContent = '计算中';
   const progress = state.totalSelections ? Math.min(100, (state.currentSelection / state.totalSelections) * 100) : 0;
   els.progressFill.style.width = `${progress}%`;
 }
@@ -625,6 +625,11 @@ function drawResultImage(items) {
 
 function compareFactory() {
   return function(a, b) {
+
+    if (a.id === b.id) {
+      return Promise.resolve(0);
+      }
+    
     return new Promise(resolve => {
       const myRunId = state.runId;
       state.currentLeft = a;
@@ -669,6 +674,7 @@ function compareFactory() {
       }
 
       function pick(winner) {
+        if (state.clickLocked || state.autoPicking) return;
         if (myRunId !== state.runId) return;
         if (state.clickLocked || state.autoPicking) return;
         state.clickLocked = true;
@@ -679,6 +685,7 @@ function compareFactory() {
         updateStats();
         requestAnimationFrame(() => {
           if (myRunId !== state.runId) return;
+          state.currentResolver = null;
           resolve(winner === 'left' ? -1 : 1);
         });
       }
@@ -732,7 +739,7 @@ async function runSort(replayChoices = [], preserveShuffle = false) {
     state.shuffled = shuffle(ITEMS);
   }
 
-  state.totalSelections = estimateComparisons(state.shuffled.length);
+  state.totalSelections = 0;
   state.currentSelection = 0;
   els.startBtn.classList.add('hidden');
   els.saveImageBtn.classList.add('hidden');
