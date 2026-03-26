@@ -536,7 +536,7 @@ function updateStats() {
   els.totalCount.textContent = ITEMS.length;
   const total = state.totalSelections || estimateComparisons(ITEMS.length);
   els.currentCount.textContent = `${state.currentSelection}`;
-  els.estimateCount.textContent = '计算中';
+  els.estimateCount.textContent = Math.max(0, Math.round(state.estimatedRemaining));
   const progress = state.totalSelections ? Math.min(100, (state.currentSelection / state.totalSelections) * 100) : 0;
   els.progressFill.style.width = `${progress}%`;
 }
