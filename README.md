@@ -1,0 +1,2 @@
+偶像梦幻祭好感排序生成器
+enstars characters sorter
