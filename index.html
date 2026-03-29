@@ -482,7 +482,16 @@
   </div>
 
 <script>
-const ITEMS = [{"id": 1, "src": "assets/10013.png"}, {"id": 2, "src": "assets/10014.png"}, {"id": 3, "src": "assets/10015.png"}, {"id": 4, "src": "assets/10016.png"}, {"id": 5, "src": "assets/10017.png"}, {"id": 6, "src": "assets/10018.png"}, {"id": 7, "src": "assets/10019.png"}, {"id": 8, "src": "assets/10020.png"}, {"id": 9, "src": "assets/10021.png"}, {"id": 10, "src": "assets/10022.png"}, {"id": 11, "src": "assets/10023.png"}, {"id": 12, "src": "assets/10024.png"}, {"id": 13, "src": "assets/10025.png"}, {"id": 14, "src": "assets/10026.png"}, {"id": 15, "src": "assets/10027.png"}, {"id": 16, "src": "assets/10028.png"}, {"id": 17, "src": "assets/10029.png"}, {"id": 18, "src": "assets/10030.png"}, {"id": 19, "src": "assets/10031.png"}, {"id": 20, "src": "assets/10032.png"}, {"id": 21, "src": "assets/10033.png"}, {"id": 22, "src": "assets/10034.png"}, {"id": 23, "src": "assets/10035.png"}, {"id": 24, "src": "assets/10036.png"}, {"id": 25, "src": "assets/10037.png"}, {"id": 26, "src": "assets/10038.png"}, {"id": 27, "src": "assets/10039.png"}, {"id": 28, "src": "assets/10040.png"}, {"id": 29, "src": "assets/10041.png"}, {"id": 30, "src": "assets/10042.png"}, {"id": 31, "src": "assets/10043.png"}, {"id": 32, "src": "assets/10044.png"}, {"id": 33, "src": "assets/10045.png"}, {"id": 34, "src": "assets/10046.png"}, {"id": 35, "src": "assets/10047.png"}, {"id": 36, "src": "assets/10048.png"}, {"id": 37, "src": "assets/10049.png"}, {"id": 38, "src": "assets/10050.png"}, {"id": 39, "src": "assets/10051.png"}, {"id": 40, "src": "assets/10052.png"}, {"id": 41, "src": "assets/10053.png"}, {"id": 42, "src": "assets/10054.png"}, {"id": 43, "src": "assets/10055.png"}, {"id": 44, "src": "assets/10056.png"}, {"id": 45, "src": "assets/10057.png"}, {"id": 46, "src": "assets/10058.png"}, {"id": 47, "src": "assets/10059.png"}, {"id": 48, "src": "assets/10060.png"}, {"id": 49, "src": "assets/10061.png"}, {"id": 50, "src": "assets/10062.png"}, {"id": 51, "src": "assets/10063.png"}, {"id": 52, "src": "assets/10064.png"}, {"id": 53, "src": "assets/10065.png"}, {"id": 54, "src": "assets/10066.png"}, {"id": 55, "src": "assets/10067.png"}, {"id": 56, "src": "assets/10068.png"}, {"id": 57, "src": "assets/10069.png"}, {"id": 58, "src": "assets/10070.png"}, {"id": 59, "src": "assets/10071.png"}, {"id": 60, "src": "assets/10072.png"}, {"id": 61, "src": "assets/10073.png"}, {"id": 62, "src": "assets/10074.png"}, {"id": 63, "src": "assets/10075.png"}, {"id": 64, "src": "assets/img9355.png"}];
+function uniqueItems(arr) {
+  const seen = new Set();
+  return arr.filter(item => {
+    if (seen.has(item.id)) return false;
+    seen.add(item.id);
+    return true;
+  });
+}
+
+const ITEMS = uniqueItems([{"id": 1, "src": "assets/10013.png"}, {"id": 2, "src": "assets/10014.png"}, {"id": 3, "src": "assets/10015.png"}, {"id": 4, "src": "assets/10016.png"}, {"id": 5, "src": "assets/10017.png"}, {"id": 6, "src": "assets/10018.png"}, {"id": 7, "src": "assets/10019.png"}, {"id": 8, "src": "assets/10020.png"}, {"id": 9, "src": "assets/10021.png"}, {"id": 10, "src": "assets/10022.png"}, {"id": 11, "src": "assets/10023.png"}, {"id": 12, "src": "assets/10024.png"}, {"id": 13, "src": "assets/10025.png"}, {"id": 14, "src": "assets/10026.png"}, {"id": 15, "src": "assets/10027.png"}, {"id": 16, "src": "assets/10028.png"}, {"id": 17, "src": "assets/10029.png"}, {"id": 18, "src": "assets/10030.png"}, {"id": 19, "src": "assets/10031.png"}, {"id": 20, "src": "assets/10032.png"}, {"id": 21, "src": "assets/10033.png"}, {"id": 22, "src": "assets/10034.png"}, {"id": 23, "src": "assets/10035.png"}, {"id": 24, "src": "assets/10036.png"}, {"id": 25, "src": "assets/10037.png"}, {"id": 26, "src": "assets/10038.png"}, {"id": 27, "src": "assets/10039.png"}, {"id": 28, "src": "assets/10040.png"}, {"id": 29, "src": "assets/10041.png"}, {"id": 30, "src": "assets/10042.png"}, {"id": 31, "src": "assets/10043.png"}, {"id": 32, "src": "assets/10044.png"}, {"id": 33, "src": "assets/10045.png"}, {"id": 34, "src": "assets/10046.png"}, {"id": 35, "src": "assets/10047.png"}, {"id": 36, "src": "assets/10048.png"}, {"id": 37, "src": "assets/10049.png"}, {"id": 38, "src": "assets/10050.png"}, {"id": 39, "src": "assets/10051.png"}, {"id": 40, "src": "assets/10052.png"}, {"id": 41, "src": "assets/10053.png"}, {"id": 42, "src": "assets/10054.png"}, {"id": 43, "src": "assets/10055.png"}, {"id": 44, "src": "assets/10056.png"}, {"id": 45, "src": "assets/10057.png"}, {"id": 46, "src": "assets/10058.png"}, {"id": 47, "src": "assets/10059.png"}, {"id": 48, "src": "assets/10060.png"}, {"id": 49, "src": "assets/10061.png"}, {"id": 50, "src": "assets/10062.png"}, {"id": 51, "src": "assets/10063.png"}, {"id": 52, "src": "assets/10064.png"}, {"id": 53, "src": "assets/10065.png"}, {"id": 54, "src": "assets/10066.png"}, {"id": 55, "src": "assets/10067.png"}, {"id": 56, "src": "assets/10068.png"}, {"id": 57, "src": "assets/10069.png"}, {"id": 58, "src": "assets/10070.png"}, {"id": 59, "src": "assets/10071.png"}, {"id": 60, "src": "assets/10072.png"}, {"id": 61, "src": "assets/10073.png"}, {"id": 62, "src": "assets/10074.png"}, {"id": 63, "src": "assets/10075.png"}, {"id": 64, "src": "assets/img9355.png"}]);
 
 const els = {
   totalCount: document.getElementById('totalCount'),
@@ -554,6 +563,9 @@ function renderBattle() {
   els.restartBtn.classList.remove('hidden');
   els.undoBtn.classList.toggle('hidden', state.choiceHistory.length === 0 || state.autoPicking || state.finished);
   if (state.currentLeft && state.currentRight) {
+    if (state.currentLeft === state.currentRight || state.currentLeft.id === state.currentRight.id) {
+      return;
+    }
     els.leftImg.src = state.currentLeft.src;
     els.rightImg.src = state.currentRight.src;
   }
@@ -632,9 +644,9 @@ function drawResultImage(items) {
 function compareFactory() {
   return function(a, b) {
 
-    if (a.id === b.id) {
+    if (a === b || a.id === b.id) {
       return Promise.resolve(0);
-      }
+    }
     
     return new Promise(resolve => {
       const myRunId = state.runId;
